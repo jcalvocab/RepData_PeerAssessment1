@@ -5,7 +5,9 @@ output:
     keep_md: true
 ---
 # Introduction
-
+```{r setoptions,echo=TRUE}
+opts_chunk$set(echo=TRUE)
+```
 This assignment makes use of data from a personal activity monitoring device. This device collects
 data at 5 minute intervals through out the day. The data consists of two months of data from an
 anonymous individual collected during the months of October and November, 2012 and include the
@@ -24,7 +26,7 @@ observations in this dataset.
 ## Loading and preprocessing the data
 
 **1. Unzip file "activity.zip"**
-```{r unzip}
+```{r unzip, echo=TRUE}
 if(!file.exists("activity.csv")){
         ## extract the zip file
         unzip("activity.zip", overwrite = TRUE)
@@ -32,12 +34,12 @@ if(!file.exists("activity.csv")){
 ```
 
 **2. Read the data**
-```{r read}
+```{r read,echo=TRUE}
 df<-read.csv("activity.csv",header=TRUE, as.is = TRUE, comment.char = "", na.strings = c("NA"),
                colClasses = c("integer", "Date", "integer"), nrows = 17568)
 ```
 **3. Process/transform the data into a format suitable for analysis**
-```{r process}
+```{r process,echo=TRUE}
 ## Convert 'interval' column to a factor variable
 df$interval<-factor(df$interval)
 ## Clean rows that do not have data on a particular interval
@@ -45,13 +47,13 @@ good<-complete.cases(df)
 df_no_NA<-df[good,]
 ```
 **4. Inspect the data**
-```{r preview_data}
+```{r preview_data,echo=TRUE}
 str(df_no_NA)
 ```
 
 **5. Install required packages for analysis**
 
-```{r intall_required}
+```{r intall_required,echo=TRUE}
 ## Install required packages for plotting
 if (!require("ggplot2")) {
         install.packages("ggplot2")
@@ -63,7 +65,7 @@ require("ggplot2")
 **1. Make a histogram of the total number of steps taken each day**
 
 Calculate total number of steps taken each day and preview data
-```{r aggregatebydate}
+```{r aggregatebydate,echo=TRUE}
 #Aggregate data per day. We ignore the missing values in the dataset.
 total_steps_per_day <- aggregate(steps ~ date, data = df_no_NA, sum)
 ## Preview the firt 10 rows of summary
@@ -71,7 +73,7 @@ head(total_steps_per_day,10)
 
 ```
 Plot histogram of the total number of steps taken each day
-```{r plothist, fig.height=4}
+```{r plothist, fig.height=4,echo=TRUE}
 hist<-ggplot(total_steps_per_day,aes(x=date,y=steps)) +
         geom_bar(stat="identity") +
         labs(x="Date", y="Total Number os steps") + 
@@ -81,14 +83,14 @@ print(hist)
 
 **2. Calculate and report the *mean* and *median* total number of steps taken per day**
 
-```{r summary_steps_per_day}
+```{r summary_steps_per_day,echo=TRUE}
 s1<-summary(total_steps_per_day$steps)
 s1
 ```
 
 Another way to calculate mean and median is to use the `mean` and `median` R functions
 
-```{r calculate_mean_median}
+```{r calculate_mean_median,echo=TRUE}
 steps_mean<-mean(total_steps_per_day$steps)
 print(steps_mean)
 steps_median<-median(total_steps_per_day$steps)
@@ -100,7 +102,7 @@ print(steps_median)
 **1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)**
 
 Calculate the average number os steps taken acrosss all days:
-```{r avg_by_interval}
+```{r avg_by_interval,echo=TRUE}
 # Calculate avegare steps by interval
 avg_steps_per_interval <- aggregate(steps~interval,data=df_no_NA,FUN=mean)
 
@@ -113,7 +115,7 @@ head(avg_steps_per_interval)
 
 Plot the time series with the base plot system:
 
-```{r plot_avg_by_interval_baseplot, fig.height=4}
+```{r plot_avg_by_interval_baseplot, fig.height=4,echo=TRUE}
 #ploting the average daily activity pattern 
 plot(as.integer(levels(avg_steps_per_interval$interval)), 
      avg_steps_per_interval$average_steps, 
@@ -124,7 +126,7 @@ plot(as.integer(levels(avg_steps_per_interval$interval)),
 
 Plot the time series with the ggplot2 system:
 
-```{r plot_avg_by_interval_ggplot2, fig.height=4}
+```{r plot_avg_by_interval_ggplot2, fig.height=4,echo=TRUE}
 time_series_plot <- ggplot(avg_steps_per_interval,aes(x=as.integer(interval),y=average_steps)) +
         geom_line() +
         labs(x="Interval", y="Average Number of Steps") +
@@ -134,7 +136,7 @@ print(time_series_plot)
 
 **2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?**
 
-```{r interval_max_steps}
+```{r interval_max_steps,echo=TRUE}
 df_interval_max_steps<-with(avg_steps_per_interval,avg_steps_per_interval[average_steps == max(average_steps),])
 df_interval_max_steps
 ```
@@ -150,7 +152,7 @@ presence of missing days may introduce bias into some calculations or summaries 
 
 Reuse the `good` variable used to put the value of `complete.cases(df)`:
 
-```{r good}
+```{r good,echo=TRUE}
 t<-table(good)
 t
 ```
@@ -160,16 +162,16 @@ Another way:
 
 For the “steps” variable:
 
-```{r is_na_steps}
+```{r is_na_steps,echo=TRUE}
 sum(is.na(as.character(df$steps)))
 ```
 
 For the “date” variable:
-```{r is_na_date}
+```{r is_na_date,echo=TRUE}
 sum(is.na(as.character(df$date)))
 ```
 For the “interval” variable:
-```{r is_na_interval}
+```{r is_na_interval,echo=TRUE}
 sum(is.na(as.character(df$interval)))
 ```
 
@@ -178,7 +180,7 @@ So, **only the *steps* variable** have missing values.
 **2. Devise a strategy for filling in all of the missing values in the dataset. Missing values are replaced by the mean of that 5-minute interval.**
 
 
-```{r fix_na_values}
+```{r fix_na_values,echo=TRUE}
 # Create a function to get the mean steps for an interval. We reuse the `avg_steps_per_interval` object used to calculate the average number of steps by interval
 getIntervalMean<-function (my_interval){
         x<-avg_steps_per_interval[avg_steps_per_interval$interval == my_interval,]
@@ -189,7 +191,7 @@ getIntervalMean<-function (my_interval){
 
 
 **3. Create a new dataset that is equal to the original dataset but with the missing data filled in.**
-```{r}
+```{r,echo=TRUE}
 # Create a copy of the original data frame
 df_na_fixed<-df
 # Replace the NA values by the mean for the interval
@@ -206,7 +208,7 @@ str(df_na_fixed)
 and median total number of steps taken per day.**
 
 Calculate total number of steps taken each day and preview data
-```{r aggregatebydate_na_fixed}
+```{r aggregatebydate_na_fixed,echo=TRUE}
 #Aggregate data per day. We ignore the missing values in the dataset.
 total_steps_per_day_na_fixed <- aggregate(steps ~ date, data = df_na_fixed, sum)
 ## Preview the firt 10 rows of summary
@@ -214,7 +216,7 @@ head(total_steps_per_day_na_fixed,10)
 
 ```
 Plot histogram of the total number of steps taken each day for data with NA fixed:
-```{r plothist_na_fixed, fig.height=4}
+```{r plothist_na_fixed, fig.height=4,echo=TRUE}
 hist2<-ggplot(total_steps_per_day_na_fixed,aes(x=date,y=steps)) +
         geom_bar(stat="identity") +
         labs(x="Date", y="Total Number os steps") + 
@@ -224,14 +226,14 @@ print(hist2)
  
 Calculate and report the *mean* and *median* total number of steps taken per day
 
-```{r summary_steps_per_day_na_fixed}
+```{r summary_steps_per_day_na_fixed,echo=TRUE}
 s2<-summary(total_steps_per_day_na_fixed$steps)
 s2
 ```
 
 Another way to calculate mean and median is to use the `mean` and `median` R functions
 
-```{r calculate_mean_median_na_fixed}
+```{r calculate_mean_median_na_fixed,echo=TRUE}
 steps_mean_na_fixed<-mean(total_steps_per_day_na_fixed$steps)
 print(steps_mean_na_fixed)
 steps_median_na_fixed<-median(total_steps_per_day_na_fixed$steps)
@@ -248,14 +250,14 @@ print(steps_median_na_fixed)
 Comparison of `mean` and `median` in both data types  (without NA's/fixed NA's):
 
 Summary comparison:
-```{r summary_comparison}
+```{r summary_comparison,echo=TRUE}
 comparison <- rbind(data_without_NA = s1, data_with_na_fixed = s2, delta = s2-s1)
 comparison
 ```
 
 Mean an median comparison using `mean` and `median` functions:
 
-```{r mean_mediam_comparison}
+```{r mean_mediam_comparison,echo=TRUE}
 mm_no_na <- c(mean =steps_mean,median = steps_median)
 mm_na_fixed<-c(mean =steps_mean_na_fixed,median = steps_median_na_fixed)
 comparison2 <- rbind(data_without_NA = mm_no_na, data_with_na_fixed = mm_na_fixed, delta = mm_no_na-mm_na_fixed)
@@ -264,7 +266,7 @@ print(comparison2)
 
 Plot both histograms (without NA's/fixed NA's) together for best comparison:
 
-```{r hist3, fig.height=4}
+```{r hist3, fig.height=4,echo=TRUE}
 total_steps_per_day_na_fixed$name <- "Data with NA fixed"
 total_steps_per_day$name <- "Data without NA"
 steps_per_day_comparison<-rbind(total_steps_per_day_na_fixed,total_steps_per_day)
@@ -283,7 +285,7 @@ hist3
 
 **1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.**
 
-```{r add_day_type}
+```{r add_day_type,echo=TRUE}
 Sys.setlocale("LC_TIME", "C")
 ## Add a factor variable with the name of day on the week.
 df_na_fixed$day<-factor(weekdays(as.Date(df_na_fixed$date)))
@@ -301,7 +303,7 @@ str(df_na_fixed)
 the average number of steps taken, averaged across all weekday days or weekend days (y-axis).**
 
 Calculate the average number os steps taken acrosss all days:
-```{r avg_by_interval_na_fixed}
+```{r avg_by_interval_na_fixed,echo=TRUE}
 
 # Calculate avegare steps by interval
 avg_steps_per_interval_na_fixed <- aggregate(steps~ interval+day_type,data=df_na_fixed,FUN=mean)
@@ -315,7 +317,7 @@ head(avg_steps_per_interval_na_fixed)
 
 Plot the time series with the lattice system:
 
-```{r plot_avg_by_interval_na_fixed_baseplot, fig.height=4}
+```{r plot_avg_by_interval_na_fixed_baseplot, fig.height=4,echo=TRUE}
 #Making the plot
 library(lattice)
 xyplot(average_steps ~  interval | day_type, 
@@ -325,7 +327,7 @@ xyplot(average_steps ~  interval | day_type,
 
 Plot the time series with the ggplot2 system:
 
-```{r plot_avg_by_interval_na_fixed_ggplot2, fig.height=4}
+```{r plot_avg_by_interval_na_fixed_ggplot2, fig.height=4,echo=TRUE}
 time_series_plot2 <- ggplot(avg_steps_per_interval_na_fixed,aes(x=as.integer(interval),y=average_steps)) +
         geom_line() +
         facet_grid("day_type ~ .") +
