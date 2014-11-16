@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
 # Introduction
 
 This assignment makes use of data from a personal activity monitoring device. This device collects
@@ -63,13 +68,6 @@ str(df_no_NA)
 if (!require("ggplot2")) {
         install.packages("ggplot2")
 }
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```r
 require("ggplot2")
 ```
 ## What is mean total number of steps taken per day?
@@ -108,7 +106,7 @@ hist<-ggplot(total_steps_per_day,aes(x=date,y=steps)) +
 print(hist)
 ```
 
-![plot of chunk plothist](./PA1_template_files/figure-html/plothist.png) 
+![plot of chunk plothist](figure/plothist.png) 
 
 **2. Calculate and report the *mean* and *median* total number of steps taken per day**
 
@@ -183,7 +181,7 @@ plot(as.integer(levels(avg_steps_per_interval$interval)),
      main = "Average Daily Activity Pattern")
 ```
 
-![plot of chunk plot_avg_by_interval_baseplot](./PA1_template_files/figure-html/plot_avg_by_interval_baseplot.png) 
+![plot of chunk plot_avg_by_interval_baseplot](figure/plot_avg_by_interval_baseplot.png) 
 
 Plot the time series with the ggplot2 system:
 
@@ -196,7 +194,7 @@ time_series_plot <- ggplot(avg_steps_per_interval,aes(x=as.integer(interval),y=a
 print(time_series_plot)
 ```
 
-![plot of chunk plot_avg_by_interval_ggplot2](./PA1_template_files/figure-html/plot_avg_by_interval_ggplot2.png) 
+![plot of chunk plot_avg_by_interval_ggplot2](figure/plot_avg_by_interval_ggplot2.png) 
 
 **2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?**
 
@@ -351,7 +349,7 @@ hist2<-ggplot(total_steps_per_day_na_fixed,aes(x=date,y=steps)) +
 print(hist2)
 ```
 
-![plot of chunk plothist_na_fixed](./PA1_template_files/figure-html/plothist_na_fixed.png) 
+![plot of chunk plothist_na_fixed](figure/plothist_na_fixed.png) 
  
 Calculate and report the *mean* and *median* total number of steps taken per day
 
@@ -443,7 +441,7 @@ hist3<-ggplot() +
 hist3
 ```
 
-![plot of chunk hist3](./PA1_template_files/figure-html/hist3.png) 
+![plot of chunk hist3](figure/hist3.png) 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -519,7 +517,7 @@ xyplot(average_steps ~  interval | day_type,
        layout = c(1,2), type ="l", ylab="Number of Steps")
 ```
 
-![plot of chunk plot_avg_by_interval_na_fixed_baseplot](./PA1_template_files/figure-html/plot_avg_by_interval_na_fixed_baseplot.png) 
+![plot of chunk plot_avg_by_interval_na_fixed_baseplot](figure/plot_avg_by_interval_na_fixed_baseplot.png) 
 
 Plot the time series with the ggplot2 system:
 
@@ -534,7 +532,7 @@ time_series_plot2 <- ggplot(avg_steps_per_interval_na_fixed,aes(x=as.integer(int
 print(time_series_plot2)
 ```
 
-![plot of chunk plot_avg_by_interval_na_fixed_ggplot2](./PA1_template_files/figure-html/plot_avg_by_interval_na_fixed_ggplot2.png) 
+![plot of chunk plot_avg_by_interval_na_fixed_ggplot2](figure/plot_avg_by_interval_na_fixed_ggplot2.png) 
 
 The plot show that the pattern is different in weekday and weekend.
 
